@@ -15,5 +15,5 @@ public interface SimpleList<T> extends Iterable<T> {
 	 * Generate a new list using the given filter instance.
 	 * @return a new, filtered list
 	 */
-	SimpleList filter(SimpleFilter<T> filter);
+	SimpleList<T> filter(SimpleFilter<T> filter);
 }
