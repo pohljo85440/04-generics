@@ -1,5 +1,6 @@
 package ohm.softa.a04;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 
 /**
@@ -15,6 +16,31 @@ public class SimpleListImpl<T> implements SimpleList<T> {
 		head = null;
 	}
 
+
+	@Override
+	public T getAtIndex(int index) {
+		if (index < 0 || index >= size) {
+			throw new IndexOutOfBoundsException();
+		}
+		ListElement<T> current = head;
+		for (int i = 0; i < index; i++) {
+			current = current.getNext();
+		}
+		return current.getItem();
+	}
+
+	@Override
+	public void setAtIndex(int index, T item) {
+		if (index < 0 || index >= size) {
+			throw new IndexOutOfBoundsException();
+		}
+		ListElement<T> current = head;
+		for (int i = 0; i < index; i++) {
+			current = current.getNext();
+		}
+		current.item = (item);
+	}
+
 	/**
 	 * Add an object to the end of the list
 	 * @param item item to add
@@ -22,16 +48,21 @@ public class SimpleListImpl<T> implements SimpleList<T> {
 	public void add(T item){
 		/* special case empty list */
 		if(head == null){
-			head = new ListElement<T>(item);
+			head = new ListElement<>(item);
 		}else {
 			/* any other list length */
 			ListElement<T> current = head;
 			while (current.getNext() != null){
 				current = current.getNext();
 			}
-			current.setNext(new ListElement<T>(item));
+			current.setNext(new ListElement<>(item));
 		}
 		size++;
+	}
+
+	@Override
+	public void addDefault(Class<T> tClass) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+		add(tClass.getDeclaredConstructor().newInstance());
 	}
 
 	/**
@@ -39,21 +70,6 @@ public class SimpleListImpl<T> implements SimpleList<T> {
 	 */
 	public int size() {
 		return size;
-	}
-
-	/**
-	 * Get a new SimpleList instance with all items of this list which match the given filter
-	 * @param filter SimpleFilter instance
-	 * @return new SimpleList instance
-	 */
-	public SimpleList<T> filter(SimpleFilter<T> filter){
-		SimpleList<T> result = new SimpleListImpl<T>();
-		for(T o : this){
-			if(filter.include(o)){
-				result.add(o);
-			}
-		}
-		return result;
 	}
 
 	/**
